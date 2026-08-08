@@ -18,4 +18,12 @@
 - [x] 2. Hamburger button exists as static HTML (`#hamburger` with 3 `.hamburger-line` spans), not JS-conditional
 - [x] 3. `@media (max-width: 640px){ .hamburger{display:flex} }` present and not overridden
 - [x] 4. No `overflow:hidden` or z-index clipping on parents
-- [x] 5. Hardened CSS: added `flex-direction:column` (proper ☰ icon), `position:relative; z-index:60` on `.hamburger`, and `overflow:visible` on `.top-nav`/`.nav-inner`
+- [x] 5. Hardened CSS: added `flex-direction:column` (proper hamburger icon), `position:relative; z-index:60` on `.hamburger`, and `overflow:visible` on `.top-nav`/`.nav-inner`
+
+## Mobile Navigation Always Visible (no rotation needed)
+- [x] 1. Added persistent bottom nav (`<nav class="bottom-nav">`) with Home/Search/Library buttons in `index.html`
+- [x] 2. Bottom nav only shows on mobile (`@media (max-width: 640px)`), fixed at bottom, `display:flex`
+- [x] 3. "Now Playing" bar now floats above the bottom nav (`bottom:56px`) so nothing overlaps
+- [x] 4. Hamburger + mobile menu hidden on mobile (now redundant) - `display:none!important`
+- [x] 5. Main content bottom padding increased so content isn't hidden behind the two fixed bars
+- [x] 6. Bottom nav buttons reuse `.nav-btn` + `data-target`, so they work automatically with existing `app.js` wiring (no JS change needed)

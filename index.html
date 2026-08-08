@@ -211,7 +211,15 @@
     </section>
   </main>
 
-<!-- Persistent "Now Playing" bar - always visible so the user can return
+<!-- Persistent bottom navigation - always visible on mobile so Home,
+       Search and Library are reachable without opening a menu or rotating. -->
+  <nav class="bottom-nav" aria-label="Bottom navigation">
+    <button class="nav-btn nav-active" data-target="home">Home</button>
+    <button class="nav-btn" data-target="search">Search</button>
+    <button class="nav-btn" data-target="library">Library</button>
+  </nav>
+
+  <!-- Persistent "Now Playing" bar - always visible so the user can return
        to the currently playing song from any page. -->
   <div id="now-playing-bar" class="now-playing-bar hidden" role="button" tabindex="0" aria-label="Open current player">
     <div class="now-playing-info">

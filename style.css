@@ -372,6 +372,52 @@ a, button{font-family:inherit}
   }
 }
 
+/* Persistent bottom navigation (mobile only) */
+.bottom-nav{
+  display:none;
+}
+
+/* Mobile: show the bottom nav, stack it below the Now Playing bar */
+@media (max-width: 640px){
+  .bottom-nav{
+    display:flex;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:56px;
+    z-index:75;
+    background:rgba(15,23,42,0.96);
+    backdrop-filter:blur(10px);
+    border-top:1px solid rgba(139,92,246,0.35);
+    align-items:center;
+    justify-content:space-around;
+    gap:4px;
+    padding:0 8px;
+  }
+  .bottom-nav .nav-btn{
+    flex:1;
+    max-width:140px;
+    padding:10px 8px;
+    font-size:0.95rem;
+  }
+  /* The Now Playing bar floats above the bottom nav */
+  .now-playing-bar{
+    bottom:56px;
+  }
+  /* Hamburger is redundant now that Home/Search/Library are always visible */
+  .hamburger{
+    display:none!important;
+  }
+  .mobile-menu{
+    display:none!important;
+  }
+  /* Give room for both the Now Playing bar and the bottom nav */
+  .main-content{
+    padding-bottom:calc(88px + 56px);
+  }
+}
+
 /* Persistent "Now Playing" bar */
 .main-content{
   padding-bottom:88px; /* give room so the fixed bar doesn't cover content */
