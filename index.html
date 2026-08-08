@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nocturne</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-inner">
+      <div class="brand" role="banner">Nocturne</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <button class="nav-btn nav-active" data-target="home">Home</button>
+        <button class="nav-btn" data-target="search">Search</button>
+        <button class="nav-btn" data-target="library">Library</button>
+      </nav>
+
+      <!-- Hamburger shown on small screens -->
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile menu panel (hidden by default) -->
+    <div id="mobile-menu" class="mobile-menu hidden" role="menu" aria-hidden="true">
+      <button class="mobile-item" data-target="home">Home</button>
+      <button class="mobile-item" data-target="search">Search</button>
+      <button class="mobile-item" data-target="library">Library</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section id="home" class="section" aria-labelledby="home-title">
+      <div class="hero hero-split">
+        <div class="hero-copy">
+          <h1 id="home-title">Welcome to Nocturne</h1>
+          <p class="tagline">Your minimalist music companion — effortless, elegant, and always in tune.</p>
+          <div class="hero-actions">
+            <button id="get-started" class="cta">Get Started</button>
+          </div>
+        </div>
+<div class="hero-visual" aria-hidden="true">
+<div class="hero-music">
+            <svg class="headphones" viewBox="0 0 200 200" role="img" aria-label="Headphones">
+              <defs>
+                <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#A78BFA"/>
+                  <stop offset="1" stop-color="#7C3AED"/>
+                </linearGradient>
+                <linearGradient id="cupGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#8B5CF6"/>
+                  <stop offset="1" stop-color="#6D28D9"/>
+                </linearGradient>
+                <linearGradient id="padGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#C4B5FD"/>
+                  <stop offset="1" stop-color="#8B5CF6"/>
+                </linearGradient>
+              </defs>
+              <!-- headband -->
+              <path d="M40 100 C40 45 160 45 160 100" fill="none" stroke="url(#bandGrad)" stroke-width="16" stroke-linecap="round"/>
+              <path d="M40 100 C40 45 160 45 160 100" fill="none" stroke="#A78BFA" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 14" opacity="0.6"/>
+              <!-- left earcup -->
+              <rect x="26" y="92" width="34" height="74" rx="16" fill="url(#cupGrad)"/>
+              <rect x="18" y="118" width="14" height="34" rx="7" fill="url(#cupGrad)"/>
+              <rect x="32" y="100" width="16" height="58" rx="8" fill="url(#padGrad)" opacity="0.85"/>
+              <!-- right earcup -->
+              <rect x="140" y="92" width="34" height="74" rx="16" fill="url(#cupGrad)"/>
+              <rect x="168" y="118" width="14" height="34" rx="7" fill="url(#cupGrad)"/>
+              <rect x="152" y="100" width="16" height="58" rx="8" fill="url(#padGrad)" opacity="0.85"/>
+              <!-- highlight accents -->
+              <rect x="30" y="98" width="6" height="46" rx="3" fill="#C4B5FD" opacity="0.5"/>
+              <rect x="164" y="98" width="6" height="46" rx="3" fill="#C4B5FD" opacity="0.5"/>
+            </svg>
+            <span class="music-note note-1">♪</span>
+            <span class="music-note note-2">♫</span>
+            <span class="music-note note-3">♪</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-features">
+        <article class="feature-card">
+          <div class="feature-icon">♫</div>
+          <div class="feature-copy">
+            <h3>Curated for You</h3>
+            <p>Discover handpicked playlists that match your mood.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">♡</div>
+          <div class="feature-copy">
+            <h3>Your Library</h3>
+            <p>Save your favorite tracks and listen anytime, anywhere.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-copy">
+            <h3>Seamless Experience</h3>
+            <p>Minimal design. Maximum focus on your music.</p>
+          </div>
+        </article>
+      </div>
+
+      <footer class="home-footer">
+        <p>&copy; 2025 Nocturne. All rights reserved.</p>
+        <p>Made with <span class="footer-heart">♥</span> by Nisa Khawar</p>
+      </footer>
+    </section>
+
+<section id="search" class="section hidden" aria-labelledby="search-title">
+      <div class="search-wrap">
+        <button class="back-btn" type="button" aria-label="Go back to previous page">
+          <svg class="back-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h2 id="search-title">Search</h2>
+<div class="search-controls">
+          <div class="search-field">
+            <label for="search-input" class="visually-hidden">Search songs</label>
+            <input id="search-input" type="search" placeholder="Search by title or artist" autocomplete="off" />
+            <div id="search-suggestions" class="search-suggestions hidden" role="listbox" aria-label="Search suggestions"></div>
+          </div>
+          <button id="search-btn" class="action">Search</button>
+        </div>
+
+        <div id="results" class="results-grid" aria-live="polite">
+          <!-- Results rendered here by app.js after searching the iTunes API -->
+          <p class="muted">Try searching for an artist or song above to load previews.</p>
+        </div>
+      </div>
+    </section>
+
+<section id="player" class="section hidden" aria-labelledby="player-title">
+      <div class="player-wrap">
+        <button class="back-btn" type="button" aria-label="Go back to previous page">
+          <svg class="back-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h2 id="player-title" class="visually-hidden">Player</h2>
+        <div class="player-grid">
+          <div class="album-art-large" aria-hidden="true">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'><rect width='100%25' height='100%25' fill='%231E293B'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238B5CF6' font-size='96'>Nocturne</text></svg>" alt="Album art large"/>
+          </div>
+
+          <div class="track-controls">
+            <div class="track-meta">
+<div class="track-title-row">
+                <div class="track-title" id="player-track-title">Moonlight Reverie</div>
+              </div>
+              <div class="track-artist" id="player-track-artist">Luna &amp; The Nocturnes</div>
+            </div>
+
+            <div class="progress">
+              <span class="time current">0:00</span>
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-fill" style="width:0%"></div>
+              </div>
+              <span class="time duration">3:45</span>
+            </div>
+
+<div class="controls">
+              <button class="control" id="prev" aria-label="Previous track">◀◀</button>
+              <button class="control primary" id="play" aria-label="Play or pause">▶</button>
+              <button class="control" id="next" aria-label="Next track">▶▶</button>
+              <button id="fav-btn" class="control fav-control" aria-pressed="false" aria-label="Add to favourites">♡ Add to Favourites</button>
+            </div>
+
+            <div class="volume">
+              <label for="volume-slider">Volume</label>
+              <input id="volume-slider" type="range" min="0" max="100" value="80" />
+              <button class="control" id="test-sound" type="button">Test Sound</button>
+            </div>
+            <p id="player-status" class="muted" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section id="library" class="section hidden" aria-labelledby="library-title">
+      <div class="library-wrap">
+        <button class="back-btn" type="button" aria-label="Go back to previous page">
+          <svg class="back-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h2 id="library-title">Library</h2>
+        <div class="library-columns">
+<div class="library-column">
+            <div class="library-heading-row">
+              <h3>Recently Played</h3>
+              <button id="clear-history" class="clear-history-btn" type="button" aria-label="Clear recently played history">Clear history</button>
+            </div>
+            <ul id="recent-list" class="library-list"></ul>
+          </div>
+          <div class="library-column">
+            <h3>Favourite Songs</h3>
+            <ul id="favourites-list" class="library-list"></ul>
+          </div>
+        </div>
+
+        <div class="library-detail" aria-live="polite" id="library-detail">
+          <p class="muted">Your library is empty. Play songs and favorite them to populate these lists.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<!-- Persistent "Now Playing" bar - always visible so the user can return
+       to the currently playing song from any page. -->
+  <div id="now-playing-bar" class="now-playing-bar hidden" role="button" tabindex="0" aria-label="Open current player">
+    <div class="now-playing-info">
+      <img id="now-playing-art" class="now-playing-art" src="" alt="" />
+      <div class="now-playing-meta">
+        <div id="now-playing-title" class="now-playing-title">No track</div>
+        <div id="now-playing-artist" class="now-playing-artist"></div>
+      </div>
+    </div>
+    <button id="now-playing-toggle" class="now-playing-toggle" type="button" aria-label="Play or pause">
+      ▶
+    </button>
+  </div>
+
+  <audio id="audio" preload="none"></audio>
+  <script src="app.js" defer></script>
+</body>
+</html>
