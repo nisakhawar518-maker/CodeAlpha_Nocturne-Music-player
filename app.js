@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let playRequestId = 0;
   let toneAudioContext = null;
   let isStartingPlayback = false;
-  let audiusHost = null;
 
   const suggestionsEl = document.getElementById('search-suggestions');
   let suggestionTracks = [];
@@ -84,26 +83,28 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  function normalizedTrack(track) {
-    const trackId = Number(track && (track.trackId || track.track_id));
+function normalizedTrack(track) {
+    const trackId = Number(track && (track.trackId || track.track_id || track.id));
     if (!Number.isFinite(trackId) || trackId <= 0) return null;
-    const streamUrl = (track.stream && track.stream.url) || track.previewUrl || '';
+    const streamUrl = (track.stream && track.stream.url) || track.previewUrl || track.audio || '';
     if (!streamUrl) return null;
     const artwork =
       (track.artwork && (track.artwork['480x480'] || track.artwork['150x150'] || track.artwork['1000x1000'])) ||
       track.artworkUrl100 ||
+      track.image ||
       '';
     const artist =
       (track.user && (track.user.name || track.user.handle)) ||
       track.artistName ||
+      track.artist_name ||
       'Unknown';
     return {
       trackId,
-      trackName: track.trackName || track.title || track.collectionName || 'Unknown',
+trackName: track.trackName || track.title || track.name || track.collectionName || 'Unknown',
       artistName: artist,
       artworkUrl100: artwork,
       previewUrl: streamUrl,
-      duration: Number(track.duration) || 0
+      duration: Number(track.trackTimeMillis) ? Math.round(Number(track.trackTimeMillis) / 1000) : (Number(track.duration) || 0)
     };
   }
 
@@ -246,7 +247,7 @@ function setPlayerStatus(message) {
       }
       const bytes = await response.arrayBuffer();
       clearObjectUrl();
-      const blob = new Blob([bytes], { type: 'audio/mp4' });
+const blob = new Blob([bytes], { type: 'audio/mpeg' });
       currentObjectUrl = URL.createObjectURL(blob);
       audio.src = currentObjectUrl;
     }
@@ -285,41 +286,16 @@ function setPlayerStatus(message) {
     }
   }
 
-  async function getAudiusHost() {
-    if (audiusHost) return audiusHost;
-    const hostDiscovery = await fetch('https://api.audius.co');
-    if (!hostDiscovery.ok) {
-      throw new Error(`Audius discovery failed with status ${hostDiscovery.status}`);
-    }
-    const hostData = await hostDiscovery.json();
-    const hosts = Array.isArray(hostData.data) ? hostData.data : [];
-    if (hosts.length === 0) {
-      throw new Error('No Audius host available');
-    }
-    audiusHost = String(hosts[0]).replace(/\/+$/, '');
-    return audiusHost;
-  }
-
-  async function searchAudiusTracks(term) {
-    const host = await getAudiusHost();
-    const url = `${host}/v1/tracks/search?query=${encodeURIComponent(term)}&limit=12`;
+async function audiusSearch(term) {
+    // Audius public API - no API key required. Returns full-length tracks
+    // (unlike iTunes which only provides 30-second previews).
+    const url = `https://api.audius.co/v1/full/tracks/search?app_name=Nocturne&query=${encodeURIComponent(term)}&limit=30`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Audius search failed with status ${response.status}`);
     }
     const data = await response.json();
     const rawTracks = Array.isArray(data.data) ? data.data : [];
-    return rawTracks.map(normalizedTrack).filter(Boolean);
-  }
-
-  async function itunesSearch(term) {
-    const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=10`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`iTunes search failed with status ${response.status}`);
-    }
-    const data = await response.json();
-    const rawTracks = Array.isArray(data.results) ? data.results : [];
     const seen = new Set();
     const tracks = [];
     rawTracks.forEach((track) => {
@@ -493,7 +469,7 @@ function selectSuggestion(index) {
       return;
     }
     try {
-      const tracks = await itunesSearch(term);
+const tracks = await audiusSearch(term);
       suggestionTracks = tracks;
       renderSuggestions(tracks);
     } catch (error) {
@@ -688,7 +664,7 @@ card.appendChild(img);
     }
     resultsEl.innerHTML = '<p class="muted">Searching...</p>';
 
-    const tracks = await searchAudiusTracks(term);
+const tracks = await audiusSearch(term);
 
     searchResults = tracks;
     if (tracks.length === 0) {
