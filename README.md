@@ -1,3 +1,4 @@
+
 # Nocturne 🎵
 
 A minimalist music streaming web app built with vanilla HTML, CSS, and JavaScript. 
@@ -5,15 +6,23 @@ Search, browse, and play full-length songs — all in one seamless, single-page 
 
 ## Features
 
-- **Home** — clean landing page with a "Get Started" call-to-action
-- **Search** — search any song or artist, with a default "Popular right now" 
+-  **Home** — clean landing page with a "Get Started" call-to-action
+-  **Search** — search any song or artist, with a default "Popular right now" 
   feed shown automatically on first load so the screen is never blank
--  **Now Playing** — full playback controls (play/pause, next/previous, 
+- **Now Playing** — full playback controls (play/pause, next/previous, 
   seek bar, volume) with full-length audio, not just short previews
 -  **Library** — Recently Played and Favourite Songs, saved locally so 
   they persist across sessions
--  **Fully responsive** — adapts smoothly to mobile, tablet, and desktop, 
+- **Fully responsive** — adapts smoothly to mobile, tablet, and desktop, 
   with a hamburger menu on smaller screens
+
+## About
+
+Nocturne pulls songs from the free Audius API, which hosts independent and 
+Creative Commons-licensed music rather than mainstream/major-label tracks. 
+This means some specific songs or artists may not be found — try a broader 
+search term (song title only, or just the artist name) if a search comes up 
+empty.
 
 ## Recent Updates
 
@@ -30,6 +39,12 @@ Search, browse, and play full-length songs — all in one seamless, single-page 
 - Hardened the hamburger menu CSS (proper stacking, no clipping/overflow 
   issues) so it displays reliably on real mobile devices, not just in 
   browser dev tools
+
+### Error Handling & Loading States
+- Added clear loading indicators ("Searching...", "Loading popular songs...") 
+  everywhere the app fetches data
+- Friendly fallback messages if the API fails or a search returns nothing, 
+  instead of a blank or broken screen
 
 ## Built With
 
@@ -55,4 +70,4 @@ Nocturne/
 
 ## Author
 
-Built by Nisa as part of the CodeAlpha Frontend Development Internship.
+Built by Nisa Khawar as part of the CodeAlpha Frontend Development Internship.
