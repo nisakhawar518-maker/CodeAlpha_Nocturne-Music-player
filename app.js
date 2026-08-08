@@ -10,9 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  const searchInput = document.getElementById('search-input');
+const searchInput = document.getElementById('search-input');
   const searchButton = document.getElementById('search-btn');
   const resultsEl = document.getElementById('results');
+  const resultsHeadingEl = document.getElementById('results-heading');
+  const backToPopularBtn = document.getElementById('back-to-popular');
 
   const audio = document.getElementById('audio');
   const playerArt = document.querySelector('#player .album-art-large img');
@@ -53,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const INITIAL_ART =
     "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'><rect width='100%25' height='100%25' fill='%231E293B'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238B5CF6' font-size='96'>Nocturne</text></svg>";
 
-  let searchResults = [];
+let searchResults = [];
+  let isShowingPopular = false;
   let currentQueue = [];
   let currentIndex = -1;
   let currentTrack = null;
@@ -620,7 +623,55 @@ function renderRecentlyPlayed() {
     });
   }
 
-function renderSearchResults(items) {
+// Default "Popular right now" browse view shown before any search is made.
+  // Fetches a few popular/varied terms and merges them into one grid.
+  const POPULAR_TERMS = ['top hits', 'pop', 'trending 2026'];
+  const MAX_POPULAR = 15;
+
+  function setResultsHeading(text) {
+    if (resultsHeadingEl) resultsHeadingEl.textContent = text;
+  }
+
+  function setBackToPopularVisible(visible) {
+    if (!backToPopularBtn) return;
+    backToPopularBtn.classList.toggle('hidden', !visible);
+  }
+
+  async function loadPopular() {
+    isShowingPopular = true;
+    setBackToPopularVisible(false);
+    setResultsHeading('Popular right now');
+    resultsEl.innerHTML = '<p class="muted">Loading popular songs...</p>';
+
+    try {
+      const seen = new Set();
+      const combined = [];
+      // Fetch terms sequentially so we can cap the total at MAX_POPULAR.
+      for (const term of POPULAR_TERMS) {
+        if (combined.length >= MAX_POPULAR) break;
+        const tracks = await audiusSearch(term);
+        tracks.forEach((track) => {
+          if (combined.length >= MAX_POPULAR) return;
+          if (!seen.has(track.trackId)) {
+            seen.add(track.trackId);
+            combined.push(track);
+          }
+        });
+      }
+      if (combined.length === 0) {
+        resultsEl.innerHTML = '<p class="muted">No songs available right now. Try searching above.</p>';
+        return;
+      }
+      searchResults = combined.slice();
+      currentQueue = combined.slice();
+      renderSearchResults(combined);
+    } catch (error) {
+      console.error('Failed to load popular songs', error);
+      resultsEl.innerHTML = '<p class="muted">Unable to fetch songs right now. Please try again.</p>';
+    }
+  }
+
+  function renderSearchResults(items) {
     resultsEl.innerHTML = '';
     items.forEach((track, index) => {
       const card = document.createElement('article');
@@ -656,15 +707,18 @@ card.appendChild(img);
     highlightActiveItems();
   }
 
-  async function doSearch(rawTerm) {
+async function doSearch(rawTerm) {
     const term = (rawTerm || '').trim();
     if (!term) {
       resultsEl.innerHTML = '<p class="muted">Please enter a search term.</p>';
       return;
     }
+    isShowingPopular = false;
+    setBackToPopularVisible(true);
+    setResultsHeading(`Results for "${term}"`);
     resultsEl.innerHTML = '<p class="muted">Searching...</p>';
 
-const tracks = await audiusSearch(term);
+    const tracks = await audiusSearch(term);
 
     searchResults = tracks;
     if (tracks.length === 0) {
@@ -767,6 +821,14 @@ if (getStartedBtn) {
         audio.pause();
       }
       syncNowPlayingToggle();
+    });
+  }
+
+if (backToPopularBtn) {
+    backToPopularBtn.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      hideSuggestions();
+      loadPopular();
     });
   }
 
@@ -971,8 +1033,11 @@ audio.addEventListener('playing', () => {
     clearObjectUrl();
   });
 
-  renderRecentlyPlayed();
+renderRecentlyPlayed();
   renderFavourites();
+  // Load the default "Popular right now" browse content so the Search screen
+  // is never blank on first visit (before the user has typed anything).
+  loadPopular();
   showSection('home');
   if (playerArt) playerArt.src = INITIAL_ART;
 });
