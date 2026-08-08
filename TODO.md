@@ -1,15 +1,14 @@
-# Nocturne - Default Browse View on Search
+# Nocturne - Final Hardening Pass
 
-## Add default "Popular right now" content so the Search screen is never blank
-- [x] 1. Add results header row (`#results-heading` + `#back-to-popular`) in `index.html`
-- [x] 2. Add browse state, `loadPopular()`, heading/back-button updates in `app.js`
-- [x] 3. Modify `doSearch()` to set "Results for ..." heading and show back button
-- [x] 4. Wire the "Back to popular" button to clear input + reload popular content
-- [x] 5. Call `loadPopular()` on initial page load
-- [x] 6. Add `.results-header`, `.results-heading`, `.back-to-popular` styles in `style.css`
+## Error handling & loading states
+- [x] 1. Add shared friendly error message constant in `app.js`
+- [x] 2. Wrap `audiusSearch()` fetch in try/catch (network + non-200)
+- [x] 3. Add internal try/catch to `doSearch()` with friendly error + clear stale results
+- [x] 4. Make each popular term resilient in `loadPopular()` (one bad term doesn't wipe partial results)
+- [x] 5. Add "Searching..." loading indicator to suggestion dropdown; clean error handling
+- [x] 6. Wrap blob-fallback fetch in `tryPlayTrackSource()` explicitly
+- [x] 7. Simplify search button/keydown handlers (now handled inside `doSearch`)
+- [x] 8. Add `.suggestion-loading` style in `style.css`
 
-## Verification (pending browser test)
-- [ ] 1. Search page shows default content on first load
-- [ ] 2. Searching replaces content + heading with "Results for ..."
-- [ ] 3. "Back to popular" clears input and restores default content
-- [ ] 4. Loading/empty states still work as before
+## Walkthrough verification
+- [ ] 9. Home → Search → play a song → Player controls → Library → mobile view

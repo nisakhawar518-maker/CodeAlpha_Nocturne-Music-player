@@ -242,10 +242,17 @@ function setPlayerStatus(message) {
   async function tryPlayTrackSource(sourceUrl, useBlobFallback) {
     audio.muted = false;
     audio.defaultMuted = false;
-    audio.src = sourceUrl;
+audio.src = sourceUrl;
     if (useBlobFallback) {
-      const response = await fetch(sourceUrl);
+      let response;
+      try {
+        response = await fetch(sourceUrl);
+      } catch (error) {
+        console.error('Blob preview fetch failed (network)', error);
+        throw new Error('network');
+      }
       if (!response.ok) {
+        console.error(`Preview fetch failed with status ${response.status}`);
         throw new Error(`Preview fetch failed with status ${response.status}`);
       }
       const bytes = await response.arrayBuffer();
@@ -289,15 +296,32 @@ const blob = new Blob([bytes], { type: 'audio/mpeg' });
     }
   }
 
-async function audiusSearch(term) {
+// Friendly message shown when a fetch fails (no internet, API down, etc.)
+  const COULDNT_LOAD = "Couldn't load songs right now, please try again.";
+
+  async function audiusSearch(term) {
     // Audius public API - no API key required. Returns full-length tracks
     // (unlike iTunes which only provides 30-second previews).
     const url = `https://api.audius.co/v1/full/tracks/search?app_name=Nocturne&query=${encodeURIComponent(term)}&limit=30`;
-    const response = await fetch(url);
+    let response;
+    try {
+      response = await fetch(url);
+    } catch (error) {
+      // Network failure (offline, DNS, CORS, server unreachable).
+      console.error('Audius network request failed', error);
+      throw new Error('network');
+    }
     if (!response.ok) {
+      console.error(`Audius search failed with status ${response.status}`);
       throw new Error(`Audius search failed with status ${response.status}`);
     }
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      console.error('Audius returned invalid JSON', error);
+      throw new Error('invalid-json');
+    }
     const rawTracks = Array.isArray(data.data) ? data.data : [];
     const seen = new Set();
     const tracks = [];
@@ -465,14 +489,21 @@ function selectSuggestion(index) {
     }
   }
 
-  async function updateSuggestions() {
+async function updateSuggestions() {
     const term = (searchInput ? searchInput.value : '').trim();
     if (!term) {
       hideSuggestions();
       return;
     }
+    // Clear any stale suggestions and show a loading indicator while fetching.
+    suggestionTracks = [];
+    activeSuggestionIndex = -1;
+    if (suggestionsEl) {
+      suggestionsEl.innerHTML = '<div class="suggestion-loading">Searching...</div>';
+      suggestionsEl.classList.remove('hidden');
+    }
     try {
-const tracks = await audiusSearch(term);
+      const tracks = await audiusSearch(term);
       suggestionTracks = tracks;
       renderSuggestions(tracks);
     } catch (error) {
@@ -643,12 +674,12 @@ function renderRecentlyPlayed() {
     setResultsHeading('Popular right now');
     resultsEl.innerHTML = '<p class="muted">Loading popular songs...</p>';
 
-    try {
-      const seen = new Set();
-      const combined = [];
-      // Fetch terms sequentially so we can cap the total at MAX_POPULAR.
-      for (const term of POPULAR_TERMS) {
-        if (combined.length >= MAX_POPULAR) break;
+const seen = new Set();
+    const combined = [];
+    // Fetch terms sequentially so we can cap the total at MAX_POPULAR.
+    for (const term of POPULAR_TERMS) {
+      if (combined.length >= MAX_POPULAR) break;
+      try {
         const tracks = await audiusSearch(term);
         tracks.forEach((track) => {
           if (combined.length >= MAX_POPULAR) return;
@@ -657,18 +688,18 @@ function renderRecentlyPlayed() {
             combined.push(track);
           }
         });
+      } catch (error) {
+        // One bad term shouldn't wipe out the tracks we already collected.
+        console.error(`Failed to load popular term "${term}"`, error);
       }
-      if (combined.length === 0) {
-        resultsEl.innerHTML = '<p class="muted">No songs available right now. Try searching above.</p>';
-        return;
-      }
-      searchResults = combined.slice();
-      currentQueue = combined.slice();
-      renderSearchResults(combined);
-    } catch (error) {
-      console.error('Failed to load popular songs', error);
-      resultsEl.innerHTML = '<p class="muted">Unable to fetch songs right now. Please try again.</p>';
     }
+    if (combined.length === 0) {
+      resultsEl.innerHTML = `<p class="muted">${COULDNT_LOAD}</p>`;
+      return;
+    }
+    searchResults = combined.slice();
+    currentQueue = combined.slice();
+    renderSearchResults(combined);
   }
 
   function renderSearchResults(items) {
@@ -718,7 +749,17 @@ async function doSearch(rawTerm) {
     setResultsHeading(`Results for "${term}"`);
     resultsEl.innerHTML = '<p class="muted">Searching...</p>';
 
-    const tracks = await audiusSearch(term);
+    let tracks;
+    try {
+      tracks = await audiusSearch(term);
+    } catch (error) {
+      console.error('Search failed', error);
+      // Clear stale results so the previous search doesn't linger on screen.
+      searchResults = [];
+      currentQueue = [];
+      resultsEl.innerHTML = `<p class="muted">${COULDNT_LOAD}</p>`;
+      return;
+    }
 
     searchResults = tracks;
     if (tracks.length === 0) {
@@ -832,20 +873,15 @@ if (backToPopularBtn) {
     });
   }
 
-  if (searchButton) {
-    searchButton.addEventListener('click', async (event) => {
+if (searchButton) {
+    searchButton.addEventListener('click', (event) => {
       event.preventDefault();
-      try {
-        await doSearch(searchInput ? searchInput.value : '');
-      } catch (error) {
-        console.error(error);
-        resultsEl.innerHTML = '<p class="muted">Unable to fetch songs right now. Please try again.</p>';
-      }
+      doSearch(searchInput ? searchInput.value : '');
     });
   }
 
   if (searchInput) {
-    searchInput.addEventListener('keydown', async (event) => {
+    searchInput.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
         hideSuggestions();
         return;
@@ -867,13 +903,8 @@ if (backToPopularBtn) {
         selectSuggestion(activeSuggestionIndex);
         return;
       }
-      if (event.key !== 'Enter') return;
-      try {
-        await doSearch(searchInput.value);
-      } catch (error) {
-        console.error(error);
-        resultsEl.innerHTML = '<p class="muted">Unable to fetch songs right now. Please try again.</p>';
-      }
+if (event.key !== 'Enter') return;
+      doSearch(searchInput.value);
     });
 
     searchInput.addEventListener('input', () => {
