@@ -12,3 +12,10 @@
 - [x] 1. Search returns full-length Audius songs (confirmed via API test)
 - [x] 2. Progress bar reflects real full song length (320s, 200s, 190s etc.)
 - [x] 3. Playback continues past 30 seconds (verified playable full stream URLs)
+
+## Hamburger Menu Invisible on Mobile (Debug & Fix)
+- [x] 1. Viewport meta tag present in `<head>`: `<meta name="viewport" content="width=device-width,initial-scale=1" />`
+- [x] 2. Hamburger button exists as static HTML (`#hamburger` with 3 `.hamburger-line` spans), not JS-conditional
+- [x] 3. `@media (max-width: 640px){ .hamburger{display:flex} }` present and not overridden
+- [x] 4. No `overflow:hidden` or z-index clipping on parents
+- [x] 5. Hardened CSS: added `flex-direction:column` (proper ☰ icon), `position:relative; z-index:60` on `.hamburger`, and `overflow:visible` on `.top-nav`/`.nav-inner`

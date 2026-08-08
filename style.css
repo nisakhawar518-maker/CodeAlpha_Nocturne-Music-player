@@ -23,10 +23,10 @@ body{
 
 /* Top nav */
 .top-nav{
-  position:fixed;top:0;left:0;right:0;height:var(--nav-height);background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter:blur(6px);z-index:50;border-bottom:1px solid rgba(255,255,255,0.02);
+  position:fixed;top:0;left:0;right:0;height:var(--nav-height);background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter:blur(6px);z-index:50;border-bottom:1px solid rgba(255,255,255,0.02);overflow:visible;
 }
 .top-nav .nav-inner{
-  max-width:1100px;margin:0 auto;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  max-width:1100px;margin:0 auto;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 16px;overflow:visible;
 }
 .brand{font-weight:700;font-size:1.25rem;color:var(--text)}
 
@@ -38,7 +38,7 @@ body{
 .nav-active{color:var(--accent);font-weight:600}
 
 /* Hamburger (mobile) */
-.hamburger{display:none;background:transparent;border:0;width:44px;height:44px;padding:8px;border-radius:8px;align-items:center;justify-content:center;cursor:pointer}
+.hamburger{display:none;background:transparent;border:0;width:44px;height:44px;padding:8px;border-radius:8px;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;position:relative;z-index:60}
 .hamburger .hamburger-line{display:block;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:transform .18s ease, opacity .18s ease}
 .hamburger[aria-expanded="true"] .hamburger-line:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .hamburger[aria-expanded="true"] .hamburger-line:nth-child(2){opacity:0}
